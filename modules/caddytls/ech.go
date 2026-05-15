@@ -779,6 +779,7 @@ type ECHDNSPublisher struct {
 	// The DNS provider module which will establish the HTTPS record(s).
 	ProviderRaw json.RawMessage `json:"provider,omitempty" caddy:"namespace=dns.providers inline_key=name"`
 	provider    ECHDNSProvider
+	Resolvers   []string `json:"resolvers,omitempty" caddy:"namespace=dns.providers inline_key=resolvers"`
 
 	alpnByDomain map[string][]string
 	logger       *zap.Logger
@@ -819,7 +820,8 @@ func (dnsPub ECHDNSPublisher) PublisherKey() string {
 // If there is an error, it may be of type PublishECHConfigListErrors, detailing
 // potentially multiple errors keyed by associated innerName.
 func (dnsPub *ECHDNSPublisher) PublishECHConfigList(ctx context.Context, innerNames []string, configListBin []byte) error {
-	nameservers := certmagic.RecursiveNameservers(nil) // TODO: we could make resolvers configurable
+
+	nameservers := certmagic.RecursiveNameservers(dnsPub.Resolvers[:]) // TODO: we could make resolvers configurable
 
 	errs := make(PublishECHConfigListErrors)
 
