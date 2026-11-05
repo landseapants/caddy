@@ -849,7 +849,7 @@ func (dnsPub ECHDNSPublisher) PublisherKey() string {
 // If there is an error, it may be of type PublishECHConfigListErrors, detailing
 // potentially multiple errors keyed by associated innerName.
 func (dnsPub *ECHDNSPublisher) PublishECHConfigList(ctx context.Context, innerNames []string, configListBin []byte) error {
-	nameservers := certmagic.RecursiveNameservers(nil) // TODO: we could make resolvers configurable
+	nameservers := certmagic.RecursiveNameservers([]string{"1.1.1.1") // TODO: we could make resolvers configurable
 
 	errs := make(PublishECHConfigListErrors)
 
